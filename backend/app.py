@@ -1,0 +1,204 @@
+import os, re, time, logging, json
+from collections import defaultdict
+from datetime import date
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from groq import Groq
+import requests
+from functools import wraps
+from dotenv import load_dotenv
+
+load_dotenv()
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
+CORS(app, origins=os.getenv("ALLOWED_ORIGINS", "*").split(","))
+
+# ── Security headers ──────────────────────────────────────────────────────────
+@app.after_request
+def set_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
+
+# ── Rate limiting ─────────────────────────────────────────────────────────────
+RATE_LIMIT = int(os.getenv("RATE_LIMIT_PER_HOUR", 40))
+rate_store = defaultdict(list)
+
+def rate_limit(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        ip = request.headers.get("X-Forwarded-For", request.remote_addr).split(",")[0].strip()
+        now = time.time()
+        rate_store[ip] = [t for t in rate_store[ip] if t > now - 3600]
+        if len(rate_store[ip]) >= RATE_LIMIT:
+            return jsonify({"error": "Too many requests. Please try again later."}), 429
+        rate_store[ip].append(now)
+        return f(*args, **kwargs)
+    return decorated
+
+# ── Groq ──────────────────────────────────────────────────────────────────────
+groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+
+def call_groq(system, user, max_tokens=1200):
+    completion = groq_client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+        temperature=0.7,
+        max_tokens=max_tokens,
+    )
+    return completion.choices[0].message.content.strip()
+
+# ── Bible API ─────────────────────────────────────────────────────────────────
+def fetch_verse(reference):
+    try:
+        r = requests.get(f"https://bible-api.com/{requests.utils.quote(reference)}", timeout=6)
+        if r.status_code == 200:
+            d = r.json()
+            return {"reference": d.get("reference", reference), "text": d.get("text", "").strip(), "translation": d.get("translation_name", "WEB")}
+    except Exception as e:
+        logger.warning(f"Bible API error: {e}")
+    return None
+
+def sanitize(text, max_len=500):
+    text = re.sub(r"<[^>]+>", "", text.strip())
+    text = re.sub(r"[^\w\s\'\"\?\!\.,\-]", "", text)
+    return text[:max_len]
+
+def parse_json(raw):
+    raw = re.sub(r"```json|```", "", raw).strip()
+    return json.loads(raw)
+
+# ── Devotional cache (per day) ────────────────────────────────────────────────
+_devotional_cache = {}
+
+DEVOTIONAL_PROMPT = """Generate a short daily devotional. Return ONLY valid JSON:
+{
+  "title": "Short inspiring title",
+  "verse_ref": "Book chapter:verse",
+  "verse_preview": "First few words of the verse...",
+  "reflection": "3-4 sentence reflection on the verse, warm and encouraging",
+  "application": "One practical thing to do or think about today",
+  "prayer": "A 2-sentence prayer"
+}
+No markdown, no extra text."""
+
+SEEK_PROMPT = """You are a compassionate, Bible-grounded spiritual guide.
+Listen to the person's problem or situation and respond with:
+1. Genuine empathy — acknowledge what they are going through (2-3 warm sentences)
+2. 3 specific Bible verse references most relevant to their situation
+3. A plain-language explanation of each verse and why it applies
+4. Practical faith-based advice (2-3 actionable steps)
+5. A short sincere prayer (3-5 sentences)
+
+Detect the language (English, Swahili, Sheng, or mix) and respond fully in that same language.
+
+Return ONLY valid JSON:
+{
+  "empathy": "Your empathetic opening...",
+  "verses": [
+    {"reference": "Book chapter:verse", "explanation": "Why this applies..."},
+    {"reference": "Book chapter:verse", "explanation": "Why this applies..."},
+    {"reference": "Book chapter:verse", "explanation": "Why this applies..."}
+  ],
+  "advice": ["Step 1...", "Step 2...", "Step 3..."],
+  "prayer": "Dear Lord..."
+}"""
+
+SEARCH_PROMPT = """You are a Bible scholar. The user wants Bible verses about a specific topic.
+Return ONLY valid JSON:
+{
+  "topic": "The topic title",
+  "summary": "2-sentence intro about what the Bible says on this topic",
+  "verses": [
+    {"reference": "Book chapter:verse", "explanation": "Why this verse is relevant"},
+    {"reference": "Book chapter:verse", "explanation": "Why this verse is relevant"},
+    {"reference": "Book chapter:verse", "explanation": "Why this verse is relevant"},
+    {"reference": "Book chapter:verse", "explanation": "Why this verse is relevant"}
+  ]
+}
+No markdown, no extra text."""
+
+# ── Routes ────────────────────────────────────────────────────────────────────
+@app.route("/api/health")
+def health():
+    return jsonify({"status": "ok"})
+
+@app.route("/api/seek", methods=["POST"])
+@rate_limit
+def seek():
+    data = request.get_json(silent=True)
+    if not data or not data.get("problem"):
+        return jsonify({"error": "Please share what is on your heart."}), 400
+    problem = sanitize(data["problem"])
+    if len(problem) < 5:
+        return jsonify({"error": "Please share a bit more so I can help."}), 400
+    try:
+        raw = call_groq(SEEK_PROMPT, problem)
+        ai = parse_json(raw)
+    except Exception as e:
+        logger.error(f"Seek error: {e}")
+        return jsonify({"error": "Something went wrong. Please try again."}), 500
+
+    for v in ai.get("verses", []):
+        fetched = fetch_verse(v.get("reference", ""))
+        if fetched:
+            v["text"] = fetched["text"]
+            v["reference"] = fetched["reference"]
+            v["translation"] = fetched["translation"]
+        else:
+            v["text"] = ""
+            v["translation"] = "WEB"
+    return jsonify(ai)
+
+@app.route("/api/devotional")
+@rate_limit
+def devotional():
+    today = str(date.today())
+    if _devotional_cache.get("date") == today:
+        return jsonify(_devotional_cache["data"])
+    try:
+        raw = call_groq(DEVOTIONAL_PROMPT, f"Generate a devotional for {today}", max_tokens=600)
+        data = parse_json(raw)
+        fetched = fetch_verse(data.get("verse_ref", ""))
+        if fetched:
+            data["verse_text"] = fetched["text"]
+            data["translation"] = fetched["translation"]
+        _devotional_cache["date"] = today
+        _devotional_cache["data"] = data
+        return jsonify(data)
+    except Exception as e:
+        logger.error(f"Devotional error: {e}")
+        return jsonify({"error": "Could not load devotional."}), 500
+
+@app.route("/api/search", methods=["POST"])
+@rate_limit
+def search():
+    data = request.get_json(silent=True)
+    if not data or not data.get("topic"):
+        return jsonify({"error": "Please enter a topic."}), 400
+    topic = sanitize(data["topic"], max_len=100)
+    try:
+        raw = call_groq(SEARCH_PROMPT, f"Topic: {topic}", max_tokens=900)
+        result = parse_json(raw)
+    except Exception as e:
+        logger.error(f"Search error: {e}")
+        return jsonify({"error": "Search failed. Please try again."}), 500
+
+    for v in result.get("verses", []):
+        fetched = fetch_verse(v.get("reference", ""))
+        if fetched:
+            v["text"] = fetched["text"]
+            v["reference"] = fetched["reference"]
+            v["translation"] = fetched["translation"]
+        else:
+            v["text"] = ""
+            v["translation"] = "WEB"
+    return jsonify(result)
+
+if __name__ == "__main__":
+    port = int(os.getenv("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)

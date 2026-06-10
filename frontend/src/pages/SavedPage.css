@@ -1,0 +1,128 @@
+.saved-page { min-height: 100dvh; }
+
+.saved-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.saved-tabs { display: flex; gap: 8px; }
+
+.stab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.stab.active { border-color: var(--accent); background: var(--accent-light); color: var(--accent-deep); }
+
+.stab-count {
+  background: var(--bg-base);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.stab.active .stab-count { background: var(--accent); color: #fff; }
+
+.saved-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 64px 20px;
+  text-align: center;
+}
+
+.empty-icon {
+  width: 72px; height: 72px;
+  border-radius: var(--radius-lg);
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+
+.empty-title { font-weight: 700; font-size: 1.05rem; color: var(--text-primary); }
+.empty-sub { font-size: 0.88rem; color: var(--text-muted); max-width: 260px; line-height: 1.6; }
+
+.saved-list { display: flex; flex-direction: column; gap: 12px; }
+
+.saved-item {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.saved-item-top { display: flex; align-items: center; justify-content: space-between; }
+
+.saved-type-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 20px;
+}
+.saved-type-badge.verse { background: var(--accent-light); color: var(--accent-deep); }
+.saved-type-badge.prayer { background: var(--teal-light); color: var(--teal); }
+
+.saved-date { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+
+.saved-ref { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+
+.saved-verse-text {
+  font-family: var(--font-serif);
+  font-size: 0.97rem;
+  font-style: italic;
+  line-height: 1.7;
+  color: var(--text-verse);
+}
+
+.saved-explanation { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+.saved-prayer-text {
+  font-family: var(--font-serif);
+  font-size: 0.97rem;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--text-verse);
+}
+
+.saved-delete {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-end;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 10px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.saved-delete:hover { border-color: var(--danger); color: var(--danger); }

@@ -1,0 +1,30 @@
+.hero {
+  text-align: center;
+  padding: 44px 0 8px;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.hero-title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.hero-sub {
+  font-size: 0.97rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 340px;
+  margin: 0 auto;
+}

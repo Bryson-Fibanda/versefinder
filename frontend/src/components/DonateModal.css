@@ -1,0 +1,195 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(44, 32, 22, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.modal-sheet {
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border);
+  border-bottom: none;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  width: 100%;
+  max-width: 680px;
+  padding: 8px 24px 44px;
+  max-height: 92dvh;
+  overflow-y: auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 -8px 40px rgba(44,32,22,0.12);
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  margin-bottom: 8px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg-base);
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.modal-close:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.modal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.68;
+  max-width: 360px;
+}
+
+.mpesa-card {
+  width: 100%;
+  background: var(--bg-base);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mpesa-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--teal);
+}
+
+.mpesa-label {
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.mpesa-number {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--text-primary);
+}
+
+.mpesa-name {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.mpesa-steps {
+  margin-top: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.mpesa-steps-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.mpesa-steps ol {
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mpesa-steps li {
+  font-size: 0.87rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.mpesa-steps strong { color: var(--text-primary); }
+
+.modal-verse {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  font-style: italic;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.68;
+  max-width: 360px;
+}
+
+.modal-verse-ref {
+  font-size: 0.74rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: -8px;
+}
+
+.modal-done {
+  width: 100%;
+  max-width: 320px;
+  padding: 15px;
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-lg);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.97rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+  box-shadow: var(--shadow-warm);
+}
+
+.modal-done:hover {
+  background: var(--accent-deep);
+  transform: translateY(-1px);
+}

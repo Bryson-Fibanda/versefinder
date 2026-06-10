@@ -1,0 +1,20 @@
+.error-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  background: rgba(224, 82, 82, 0.08);
+  border: 1px solid rgba(224, 82, 82, 0.3);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  color: #e08a8a;
+}
+
+.error-box svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.error-box p {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}

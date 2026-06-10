@@ -1,0 +1,45 @@
+.advice-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+}
+
+.advice-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sky);
+  padding: 16px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  display: block;
+  background: var(--sky-light);
+}
+
+.advice-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.advice-step:last-child { border-bottom: none; }
+
+.advice-num {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: var(--sky-light);
+  border: 1.5px solid rgba(107,163,190,0.3);
+  color: var(--sky);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.advice-step p { font-size: 0.93rem; color: var(--text-secondary); line-height: 1.65; }

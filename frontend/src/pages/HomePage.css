@@ -1,0 +1,110 @@
+.home-page { min-height: 100dvh; display: flex; flex-direction: column; }
+
+.home-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(253,248,242,0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.home-brand { display: flex; align-items: center; gap: 9px; }
+
+.home-brand-icon {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--accent);
+}
+
+.home-brand-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.home-reset {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-light);
+  border: 1.5px solid var(--border);
+  color: var(--accent-deep);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.home-reset:hover { border-color: var(--accent); }
+
+.home-container {
+  flex: 1;
+  max-width: 640px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.home-hero { text-align: center; padding: 40px 0 4px; }
+
+.home-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 7vw, 2.8rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+.home-title em {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+.home-sub {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.home-error {
+  background: rgba(192,84,74,0.07);
+  border: 1.5px solid rgba(192,84,74,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  color: #C0544A;
+  font-size: 0.9rem;
+}
+
+.home-result { display: flex; flex-direction: column; gap: 20px; }
+
+.result-section { display: flex; flex-direction: column; gap: 8px; }
+
+.section-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  padding-left: 2px;
+}

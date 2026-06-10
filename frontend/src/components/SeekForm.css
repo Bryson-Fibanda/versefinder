@@ -1,0 +1,100 @@
+.seek-form-wrap { display: flex; flex-direction: column; gap: 10px; }
+
+.seek-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.seek-box {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.seek-box:focus-within {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 4px rgba(200,149,108,0.1), var(--shadow-card);
+}
+
+.seek-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: none;
+  padding: 18px 18px 8px;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--text-primary);
+  caret-color: var(--accent);
+  min-height: 96px;
+  max-height: 180px;
+}
+
+.seek-textarea::placeholder { color: var(--text-muted); font-style: italic; font-weight: 300; }
+.seek-textarea:disabled { opacity: 0.5; }
+
+.seek-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px 14px;
+}
+
+.char-count { font-size: 0.7rem; color: var(--text-muted); }
+
+.seek-btns { display: flex; align-items: center; gap: 8px; }
+
+.icon-btn {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.submit-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-base);
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: not-allowed;
+  transition: all var(--transition);
+}
+.submit-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: var(--shadow-warm);
+}
+.submit-btn.active:hover { background: var(--accent-deep); transform: translateY(-1px); }
+.submit-btn.active:active { transform: translateY(0); }
+
+.btn-spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: block;
+}
+
+.seek-hint { font-size: 0.74rem; color: var(--text-muted); text-align: center; }

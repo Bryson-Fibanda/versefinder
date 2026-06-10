@@ -1,0 +1,39 @@
+.empathy-wrap {
+  background: linear-gradient(135deg, #EAF6F4 0%, #F0F8F6 100%);
+  border: 1.5px solid rgba(74,155,142,0.3);
+  border-left: 4px solid var(--teal);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.empathy-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.empathy-label::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--teal);
+  border-radius: 1px;
+}
+
+.empathy-text {
+  font-family: var(--font-serif);
+  font-size: 1.12rem;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.75;
+  color: #2A5C55;
+}

@@ -1,0 +1,251 @@
+.explore-page { min-height: 100dvh; }
+
+.explore-container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.explore-search-wrap { display: flex; flex-direction: column; gap: 12px; }
+
+.explore-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 4px 4px 4px 16px;
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition);
+}
+.explore-search-box:focus-within { border-color: var(--border-focus); }
+
+.search-icon { color: var(--text-muted); flex-shrink: 0; }
+
+.explore-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  padding: 10px 0;
+}
+.explore-search-input::placeholder { color: var(--text-muted); }
+
+.explore-search-btn {
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.explore-search-btn:disabled { background: var(--border); color: var(--text-muted); cursor: default; }
+.explore-search-btn:not(:disabled):hover { background: var(--accent-deep); }
+
+.topic-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.topic-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.topic-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+.explore-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.explore-divider::before, .explore-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.explore-error {
+  font-size: 0.88rem;
+  color: var(--danger);
+  text-align: center;
+  padding: 20px;
+}
+
+/* Devotional card */
+.devo-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.devo-badge {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-light);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 10px;
+  align-self: flex-start;
+}
+
+.devo-title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.devo-verse-ref-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-deep);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.devo-verse-text {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.72;
+  color: var(--text-verse);
+  border-left: 3px solid var(--accent);
+  padding-left: 14px;
+  margin: 0;
+}
+
+.devo-reflection {
+  font-size: 0.93rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.devo-application {
+  background: var(--sky-light);
+  border: 1.5px solid rgba(107,163,190,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.devo-app-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--sky);
+}
+
+.devo-application p { font-size: 0.9rem; color: #2A4A5C; line-height: 1.6; }
+
+.devo-prayer {
+  background: linear-gradient(135deg, #FFF8EF 0%, #F0F8F6 100%);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.devo-prayer-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.devo-prayer-text {
+  font-family: var(--font-serif);
+  font-size: 0.97rem;
+  font-style: italic;
+  line-height: 1.72;
+  color: var(--text-verse);
+}
+
+.devo-save-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  align-self: flex-end;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.devo-save-btn:hover { border-color: var(--teal); color: var(--teal); }
+.devo-save-btn.saved { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
+
+/* Search results */
+.search-results { display: flex; flex-direction: column; gap: 14px; }
+
+.search-topic-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.search-summary {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.68;
+}
+
+.search-verses { display: flex; flex-direction: column; gap: 10px; }
+
+.sv-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sv-ref { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; color: var(--text-primary); }
+.sv-text { font-family: var(--font-serif); font-size: 0.97rem; font-style: italic; line-height: 1.7; color: var(--text-verse); }
+.sv-explanation { font-size: 0.87rem; color: var(--text-muted); line-height: 1.6; }

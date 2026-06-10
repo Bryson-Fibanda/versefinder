@@ -1,0 +1,48 @@
+.prayer-card {
+  background: linear-gradient(135deg, #FFF8EF 0%, #F0F8F6 100%);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+}
+
+.prayer-header { display: flex; align-items: center; gap: 8px; }
+
+.prayer-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.prayer-text {
+  font-family: var(--font-serif);
+  font-size: 1.06rem;
+  font-style: italic;
+  line-height: 1.78;
+  color: var(--text-verse);
+}
+
+.prayer-actions { display: flex; gap: 8px; }
+
+.paction-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,0.7);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.paction-btn:hover { border-color: var(--accent); color: var(--accent); }
+.paction-btn.saved { border-color: var(--teal); color: var(--teal); background: var(--teal-light); }
