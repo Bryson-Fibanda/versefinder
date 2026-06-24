@@ -72,8 +72,8 @@ def parse_json(raw):
     raw = re.sub(r"```json|```", "", raw).strip()
     return json.loads(raw)
 
-# ── Devotional cache (per day) ────────────────────────────────────────────────
-_devotional_cache = {}
+# ── Devotional cache (file-based, survives restarts) ─────────────────────────
+DEVO_CACHE_FILE = '/tmp/versefinder_devotional.json'
 
 DEVOTIONAL_PROMPT = """Generate a short daily devotional. Return ONLY valid JSON:
 {
@@ -82,7 +82,7 @@ DEVOTIONAL_PROMPT = """Generate a short daily devotional. Return ONLY valid JSON
   "verse_preview": "First few words of the verse...",
   "reflection": "3-4 sentence reflection on the verse, warm and encouraging",
   "application": "One practical thing to do or think about today",
-  "prayer": "A 2-sentence prayer"
+  "prayer": "A 2-sentence prayer written in first person as if the reader is speaking to God — use I, me, my"
 }
 No markdown, no extra text."""
 
@@ -92,7 +92,7 @@ Listen to the person's problem or situation and respond with:
 2. 3 specific Bible verse references most relevant to their situation
 3. A plain-language explanation of each verse and why it applies
 4. Practical faith-based advice (2-3 actionable steps)
-5. A short sincere prayer (3-5 sentences)
+5. A short sincere prayer (3-5 sentences) written in FIRST PERSON as if the user is speaking directly to God. Use "I", "me", "my" — never "this person" or "they". It should feel like the user's own words to God.
 
 Detect the language (English, Swahili, Sheng, or mix) and respond fully in that same language.
 
@@ -158,8 +158,18 @@ def seek():
 @rate_limit
 def devotional():
     today = str(date.today())
-    if _devotional_cache.get("date") == today:
-        return jsonify(_devotional_cache["data"])
+
+    # Try file cache first
+    if os.path.exists(DEVO_CACHE_FILE):
+        try:
+            with open(DEVO_CACHE_FILE, 'r') as f:
+                cached = json.load(f)
+            if cached.get('date') == today:
+                return jsonify(cached['data'])
+        except Exception:
+            pass
+
+    # Generate fresh devotional
     try:
         raw = call_groq(DEVOTIONAL_PROMPT, f"Generate a devotional for {today}", max_tokens=600)
         data = parse_json(raw)
@@ -167,8 +177,14 @@ def devotional():
         if fetched:
             data["verse_text"] = fetched["text"]
             data["translation"] = fetched["translation"]
-        _devotional_cache["date"] = today
-        _devotional_cache["data"] = data
+
+        # Save to file cache
+        try:
+            with open(DEVO_CACHE_FILE, 'w') as f:
+                json.dump({'date': today, 'data': data}, f)
+        except Exception as e:
+            logger.warning(f"Could not write devotional cache: {e}")
+
         return jsonify(data)
     except Exception as e:
         logger.error(f"Devotional error: {e}")
