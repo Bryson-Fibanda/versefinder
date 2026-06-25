@@ -92,7 +92,16 @@ Listen to the person's problem or situation and respond with:
 2. 3 specific Bible verse references most relevant to their situation
 3. A plain-language explanation of each verse and why it applies
 4. Practical faith-based advice (2-3 actionable steps)
-5. A short sincere prayer (3-5 sentences) written in FIRST PERSON as if the user is speaking directly to God. Use "I", "me", "my" — never "this person" or "they". It should feel like the user's own words to God.
+5. A short prayer (3-5 sentences)
+
+CRITICAL RULE FOR THE PRAYER — THIS IS MANDATORY:
+The prayer MUST be written as if the USER is speaking directly to God themselves.
+ALWAYS use "I", "me", "my", "Lord I", "Father I".
+NEVER use "this person", "they", "them", "her", "him", or any third-person language.
+The user will read the prayer out loud as their own words.
+
+WRONG example: "Lord I pray for this person who is sad, comfort them."
+CORRECT example: "Lord, I come to you with a heavy heart. I ask that you comfort me and remind me that I am not alone. Help me to feel your presence in this moment. Amen."
 
 Detect the language (English, Swahili, Sheng, or mix) and respond fully in that same language.
 
@@ -105,7 +114,7 @@ Return ONLY valid JSON:
     {"reference": "Book chapter:verse", "explanation": "Why this applies..."}
   ],
   "advice": ["Step 1...", "Step 2...", "Step 3..."],
-  "prayer": "Dear Lord..."
+  "prayer": "Lord, I..."
 }"""
 
 SEARCH_PROMPT = """You are a Bible scholar. The user wants Bible verses about a specific topic.
