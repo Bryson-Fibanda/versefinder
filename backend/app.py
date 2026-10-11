@@ -157,7 +157,30 @@ No markdown, no extra text."""
 # ── Routes ────────────────────────────────────────────────────────────────────
 @app.route("/api/health")
 def health():
-    return jsonify({"status": "ok"})
+    # "model" lets you confirm the new code is actually deployed
+    return jsonify({"status": "ok", "model": GROQ_MODEL})
+
+# TEMPORARY: open /api/selftest in a browser to see the real Groq error.
+# Only works when the env variable DEBUG_ERRORS=1 is set on Render.
+@app.route("/api/selftest")
+def selftest():
+    if os.getenv("DEBUG_ERRORS") != "1":
+        return jsonify({"error": "disabled"}), 404
+    info = {
+        "model": GROQ_MODEL,
+        "key_set": bool(os.getenv("GROQ_API_KEY")),
+        "key_length": len(os.getenv("GROQ_API_KEY") or ""),
+    }
+    try:
+        raw = call_groq("Reply with only this JSON: {\"ok\": true}", "test", max_tokens=300)
+        info["raw_reply"] = raw[:300]
+        info["parsed"] = parse_json(raw)
+        info["result"] = "SUCCESS"
+    except Exception as e:
+        info["result"] = "FAILED"
+        info["error_type"] = type(e).__name__
+        info["error"] = str(e)[:500]
+    return jsonify(info)
 
 @app.route("/api/seek", methods=["POST"])
 @rate_limit
