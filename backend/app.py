@@ -41,16 +41,34 @@ def rate_limit(f):
     return decorated
 
 # ── Groq ──────────────────────────────────────────────────────────────────────
+# llama-3.3-70b-versatile was shut down by Groq on 16 Aug 2026.
+# The model is now an env variable, so the next migration needs no code change.
+# Alternative Groq suggested: qwen/qwen3.6-27b
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def call_groq(system, user, max_tokens=1200):
+    kwargs = {}
+    # gpt-oss models "think" first, and those tokens count toward max_tokens.
+    # Keep the thinking short so the JSON answer is not cut off.
+    if GROQ_MODEL.startswith("openai/gpt-oss"):
+        kwargs["extra_body"] = {"reasoning_effort": "low"}
+
     completion = groq_client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model=GROQ_MODEL,
         messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
         temperature=0.7,
         max_tokens=max_tokens,
+        **kwargs,
     )
-    return completion.choices[0].message.content.strip()
+    content = completion.choices[0].message.content
+    if not content:
+        raise ValueError(
+            f"Empty reply from model (finish_reason={completion.choices[0].finish_reason}). "
+            "Try raising max_tokens."
+        )
+    return content.strip()
 
 # ── Bible API ─────────────────────────────────────────────────────────────────
 def fetch_verse(reference):
@@ -69,8 +87,13 @@ def sanitize(text, max_len=500):
     return text[:max_len]
 
 def parse_json(raw):
+    # Strip markdown fences, then keep only the text between the first { and last }
+    # so stray text before or after the JSON does not break parsing.
     raw = re.sub(r"```json|```", "", raw).strip()
-    return json.loads(raw)
+    start, end = raw.find("{"), raw.rfind("}")
+    if start == -1 or end == -1:
+        raise ValueError("No JSON object found in model output")
+    return json.loads(raw[start:end + 1], strict=False)
 
 # ── Devotional cache (file-based, survives restarts) ─────────────────────────
 DEVO_CACHE_FILE = '/tmp/versefinder_devotional.json'
@@ -146,10 +169,10 @@ def seek():
     if len(problem) < 5:
         return jsonify({"error": "Please share a bit more so I can help."}), 400
     try:
-        raw = call_groq(SEEK_PROMPT, problem)
+        raw = call_groq(SEEK_PROMPT, problem, max_tokens=2500)
         ai = parse_json(raw)
     except Exception as e:
-        logger.error(f"Seek error: {e}")
+        logger.error(f"Seek error: {type(e).__name__}: {e}", exc_info=True)
         return jsonify({"error": "Something went wrong. Please try again."}), 500
 
     for v in ai.get("verses", []):
@@ -180,7 +203,7 @@ def devotional():
 
     # Generate fresh devotional
     try:
-        raw = call_groq(DEVOTIONAL_PROMPT, f"Generate a devotional for {today}", max_tokens=600)
+        raw = call_groq(DEVOTIONAL_PROMPT, f"Generate a devotional for {today}", max_tokens=1000)
         data = parse_json(raw)
         fetched = fetch_verse(data.get("verse_ref", ""))
         if fetched:
@@ -196,7 +219,7 @@ def devotional():
 
         return jsonify(data)
     except Exception as e:
-        logger.error(f"Devotional error: {e}")
+        logger.error(f"Devotional error: {type(e).__name__}: {e}", exc_info=True)
         return jsonify({"error": "Could not load devotional."}), 500
 
 @app.route("/api/search", methods=["POST"])
@@ -207,10 +230,10 @@ def search():
         return jsonify({"error": "Please enter a topic."}), 400
     topic = sanitize(data["topic"], max_len=100)
     try:
-        raw = call_groq(SEARCH_PROMPT, f"Topic: {topic}", max_tokens=900)
+        raw = call_groq(SEARCH_PROMPT, f"Topic: {topic}", max_tokens=1500)
         result = parse_json(raw)
     except Exception as e:
-        logger.error(f"Search error: {e}")
+        logger.error(f"Search error: {type(e).__name__}: {e}", exc_info=True)
         return jsonify({"error": "Search failed. Please try again."}), 500
 
     for v in result.get("verses", []):
